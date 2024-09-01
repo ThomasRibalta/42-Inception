@@ -1,0 +1,19 @@
+title = "Hugo Website"
+theme = "nix"
+languageCode = "en-fr"
+
+[menu]
+  [[menu.header]]
+    name = "post"
+    weight = 0
+    url = "post"
+  [[menu.header]]
+    name = "about"
+    weight = 1
+    url = "about"
+
+[params]
+  Name = "Thomas"
+  HeaderUsername = "thoribal"
+  HeaderHostname = "thorminal"
+  About = "Je sais pas quoi dire sur moi désolé !"

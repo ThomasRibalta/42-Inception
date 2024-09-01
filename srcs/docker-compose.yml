@@ -1,19 +1,19 @@
-version: "3"
+version: "3.8"
 
 services:
   mariadb:
     container_name: mariadb
-    networks:
-      - inception
     build:
-      context: requirements/mariadb
+      context: ./requirements/mariadb
       dockerfile: Dockerfile
     env_file: .env
+    ports:
+      - "3306:3306"
+    networks:
+      - inception
     volumes:
-      - mariadb:/var/lib/mysql
+      - mariadb_volume:/var/lib/mysql
     restart: unless-stopped
-    expose:
-      - "3306"
 
   nginx:
     container_name: nginx
@@ -33,19 +33,63 @@ services:
 
   wordpress:
     container_name: wordpress
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
     env_file: .env
     volumes:
       - wordpress:/var/www/wordpress
     networks:
       - inception
-    build:
-      context: requirements/wordpress
-      dockerfile: Dockerfile
     depends_on:
       - mariadb
+      - redis
     restart: on-failure
     expose:
       - "9000"
+
+  redis:
+    container_name: redis
+    build: ./requirements/bonus/redis
+    ports:
+      - "6379:6379"
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - inception
+
+  adminer:
+    container_name: adminer
+    networks:
+      - inception
+    build:
+      context: requirements/bonus/adminer
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - "8080:8080"
+
+  ftp:
+    container_name: ftp
+    build:
+      context: requirements/bonus/ftp
+      dockerfile: Dockerfile
+    ports:
+      - "21:21"
+      - "10000-10100:10000-10100"
+    networks:
+      - inception
+    volumes:
+      - wordpress:/var/www/wordpress
+    restart: on-failure
+
+  webstatic:
+    container_name: webstatic
+    build: ./requirements/bonus/webstatic
+    restart: always
+    networks:
+      - inception
 
 volumes:
   wordpress:
@@ -54,7 +98,8 @@ volumes:
       type: "none"
       o: "bind"
       device: "/Users/thomas.rba/Desktop/wordpress"
-  mariadb:
+
+  mariadb_volume:
     driver: local
     driver_opts:
       type: "none"
