@@ -39,6 +39,7 @@ if [ ! -f "wp-config.php" ]; then
     wp config set WP_CACHE_KEY_SALT $DOMAIN_NAME --allow-root
     wp config set WP_REDIS_CLIENT phpredis --allow-root
     wp plugin install redis-cache --activate --allow-root
+
     wp plugin update --all --allow-root
     wp redis enable --allow-root
 else
@@ -48,4 +49,4 @@ fi
 if [ ! -d "/run/php" ]; then
     mkdir -p /run/php
     echo "Created /run/php directory."
-fis 
+fi
