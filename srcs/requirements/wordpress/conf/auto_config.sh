@@ -1,9 +1,14 @@
 #!/bin/bash
-sleep 10
 
 WORDPRESS_PATH='/var/www/wordpress'
 
 cd $WORDPRESS_PATH
+
+echo "Waiting for MariaDB connection..."
+until mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -h"mariadb" --silent; do
+    sleep 2
+done
+echo "MariaDB is up and running."
 
 if [ ! -f "wp-config.php" ]; then
     echo "Creating wp-config.php file..."
@@ -34,7 +39,7 @@ if [ ! -f "wp-config.php" ]; then
     echo "Second WordPress user created successfully."
 
     echo "Configuring Redis..."
-    wp config set WP_REDIS_HOST redis --allow-root 
+    wp config set WP_REDIS_HOST redis --allow-root
     wp config set WP_REDIS_PORT 6379 --raw --allow-root
     wp config set WP_CACHE_KEY_SALT $DOMAIN_NAME --allow-root
     wp config set WP_REDIS_CLIENT phpredis --allow-root
