@@ -110,14 +110,14 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: "./wordpress"
+      device: "/home/thoribal/data/wordpress"
 
   mariadb_volume:
     driver: local
     driver_opts:
       type: "none"
       o: "bind"
-      device: "./mariadb"
+      device: "/home/thoribal/data/mariadb"
 
 networks:
   inception:
